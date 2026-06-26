@@ -1,0 +1,50 @@
+.navbar{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:18px 50px;
+    background:white;
+    box-shadow:0 3px 10px rgba(0,0,0,.1);
+}
+
+.logo{
+    color:#2563eb;
+}
+
+.nav-links{
+    display:flex;
+    gap:30px;
+}
+
+.nav-links a{
+    text-decoration:none;
+    color:#333;
+    font-weight:600;
+}
+
+.nav-links a:hover{
+    color:#2563eb;
+}
+
+.auth-buttons button{
+    padding:10px 20px;
+    margin-left:10px;
+    border:none;
+    border-radius:8px;
+    cursor:pointer;
+}
+
+.login-btn{
+    background:#2563eb;
+    color:white;
+}
+
+.register-btn{
+    background:#1e40af;
+    color:white;
+}
+
+.login-btn:hover,
+.register-btn:hover{
+    opacity:.9;
+}
