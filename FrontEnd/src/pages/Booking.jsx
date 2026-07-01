@@ -1,11 +1,115 @@
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import "../styles/Booking.css";
 import VehicleCard from "../components/VehicleCard";
-import { useState } from "react";
+import axios from "axios";
+
+import GoogleMapComponent from "../components/GoogleMap";
 
 function Booking() {
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const user = localStorage.getItem("user");
+
+    if (!user) {
+      alert("Please login first.");
+      navigate("/login");
+    }
+  }, [navigate]);
   const [selectedVehicle, setSelectedVehicle] = useState("");
   const [fare, setFare] = useState(0);
   const [arrivalTime, setArrivalTime] = useState("");
+  const [passengers, setPassengers] = useState(1);
+  const [recommended, setRecommended] = useState("Bike");
+  const [bookingData, setBookingData] = useState({
+    pickup: "",
+    destination: "",
+    journeyDate: "",
+    journeyTime: "",
+  });
+
+  // Handle Input Changes
+  const handleChange = (e) => {
+    setBookingData({
+      ...bookingData,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  // Handle Passenger Count
+  const handlePassengers = (e) => {
+    const count = Number(e.target.value);
+
+    setPassengers(count);
+
+    if (count === 1) {
+      setRecommended("Bike");
+    } else if (count <= 4) {
+      setRecommended("Mini");
+    } else if (count <= 5) {
+      setRecommended("Sedan");
+    } else {
+      setRecommended("SUV");
+    }
+  };
+
+  // Handle Booking
+  const handleBooking = async () => {
+    console.log("Book Ride button clicked");
+
+    if (
+      !bookingData.pickup ||
+      !bookingData.destination ||
+      !bookingData.journeyDate ||
+      !bookingData.journeyTime
+    ) {
+      alert("Please fill all fields.");
+      return;
+    }
+
+    if (!selectedVehicle) {
+      alert("Please select a vehicle.");
+      return;
+    }
+
+    try {
+      const booking = {
+        pickup: bookingData.pickup,
+        destination: bookingData.destination,
+        journeyDate: bookingData.journeyDate,
+        journeyTime: bookingData.journeyTime,
+        passengers,
+        vehicle: selectedVehicle,
+        fare,
+        distance: bookingData.distance || "",
+        duration: bookingData.duration || "",
+      };
+      const res = await axios.post(
+        "http://localhost:5000/api/bookings",
+        booking,
+      );
+
+      alert(res.data.message);
+
+      setBookingData({
+        pickup: "",
+        destination: "",
+        journeyDate: "",
+        journeyTime: "",
+      });
+
+      setPassengers(1);
+      setSelectedVehicle("");
+      setFare(0);
+      setArrivalTime("");
+      setRecommended("Bike");
+    } catch (error) {
+      console.error(error);
+      alert(error.response?.data?.message || "Booking Failed");
+    }
+  };
+
   return (
     <div className="booking-container">
       <div className="booking-card">
@@ -14,23 +118,67 @@ function Booking() {
         <p>Choose your ride and travel safely.</p>
 
         <form onSubmit={(e) => e.preventDefault()}>
-          {/* Pickup Location */}
+          {/* Pickup */}
           <label>Pickup Location</label>
-          <input type="text" placeholder="Enter Pickup Location" />
+          <input
+            type="text"
+            name="pickup"
+            placeholder="Enter Pickup Location"
+            value={bookingData.pickup}
+            onChange={handleChange}
+          />
 
           {/* Destination */}
           <label>Destination</label>
-          <input type="text" placeholder="Enter Destination" />
+          <input
+            type="text"
+            name="destination"
+            placeholder="Enter Destination"
+            value={bookingData.destination}
+            onChange={handleChange}
+          />
 
-          {/* Journey Date */}
+          {/* Date */}
           <label>Journey Date</label>
-          <input type="date" />
+          <input
+            type="date"
+            name="journeyDate"
+            value={bookingData.journeyDate}
+            onChange={handleChange}
+          />
 
-          {/* Journey Time */}
+          {/* Time */}
           <label>Journey Time</label>
-          <input type="time" />
+          <input
+            type="time"
+            name="journeyTime"
+            value={bookingData.journeyTime}
+            onChange={handleChange}
+          />
+
+          {/* Passenger Count */}
+          <label>Number of Passengers</label>
+
+          <input
+            type="number"
+            min="1"
+            max="7"
+            value={passengers}
+            onChange={handlePassengers}
+          />
+
+          <p
+            style={{
+              textAlign: "center",
+              color: "#2563eb",
+              fontWeight: "bold",
+            }}
+          >
+            🚖 Recommended Vehicle: {recommended}
+          </p>
 
           {/* Vehicle Selection */}
+
           <label>Select Your Ride</label>
 
           <div className="vehicle-list">
@@ -46,6 +194,7 @@ function Booking() {
                 setArrivalTime("2 mins");
               }}
             />
+
             <VehicleCard
               icon="🚗"
               title="Mini"
@@ -85,6 +234,7 @@ function Booking() {
               }}
             />
           </div>
+
           <p
             style={{
               textAlign: "center",
@@ -93,8 +243,9 @@ function Booking() {
               color: "#2563eb",
             }}
           >
-            Selected Ride: {selectedVehicle || "None"}
+            Selected Ride : {selectedVehicle || "None"}
           </p>
+
           <p
             style={{
               textAlign: "center",
@@ -102,10 +253,43 @@ function Booking() {
               color: "green",
             }}
           >
-            Estimated Fare: ₹{fare}
+            Estimated Fare : ₹{fare}
           </p>
 
-          <button type="submit">Book Ride</button>
+          <p
+            style={{
+              textAlign: "center",
+              color: "green",
+              fontWeight: "bold",
+            }}
+          >
+            🟢 Available
+          </p>
+
+          <p
+            style={{
+              textAlign: "center",
+              color: "#2563eb",
+              fontWeight: "bold",
+            }}
+          >
+            ⏱ Arrival Time : {arrivalTime || "--"}
+          </p>
+
+          <GoogleMapComponent
+            bookingData={bookingData}
+            setBookingData={setBookingData}
+            fare={fare}
+            setFare={setFare}
+          />
+
+          <br />
+
+          
+
+          <button type="button" onClick={handleBooking}>
+            Book Ride
+          </button>
         </form>
       </div>
     </div>

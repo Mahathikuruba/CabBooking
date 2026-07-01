@@ -2,6 +2,8 @@ import "../styles/Home.css";
 import { Link } from "react-router-dom";
 
 function Home() {
+  const user = JSON.parse(localStorage.getItem("user"));
+
   return (
     <div className="home">
       <div className="hero">
@@ -10,13 +12,21 @@ function Home() {
         <p>Book safe, reliable, and affordable rides anytime, anywhere.</p>
 
         <div className="hero-buttons">
-          <Link to="/register">
-            <button className="primary-btn">Get Started</button>
-          </Link>
+          {user ? (
+            <Link to="/booking">
+              <button className="primary-btn">Book Your Ride</button>
+            </Link>
+          ) : (
+            <>
+              <Link to="/register">
+                <button className="primary-btn">Get Started</button>
+              </Link>
 
-          <Link to="/login">
-            <button className="secondary-btn">Login</button>
-          </Link>
+              <Link to="/login">
+                <button className="secondary-btn">Login</button>
+              </Link>
+            </>
+          )}
         </div>
       </div>
     </div>

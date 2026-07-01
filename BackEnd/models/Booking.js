@@ -6,18 +6,46 @@ const bookingSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    drop: {
+
+    destination: {
       type: String,
       required: true,
     },
-    cabType: {
+
+    journeyDate: {
       type: String,
       required: true,
     },
+
+    journeyTime: {
+      type: String,
+      required: true,
+    },
+
+    passengers: {
+      type: Number,
+      required: true,
+    },
+
+    vehicle: {
+      type: String,
+      required: true,
+    },
+
     fare: {
       type: Number,
       required: true,
     },
+    distance: {
+      type: String,
+      default: "",
+    },
+
+    duration: {
+      type: String,
+      default: "",
+    },
+
     status: {
       type: String,
       default: "Booked",
