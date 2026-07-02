@@ -1,10 +1,10 @@
 import { useState, useRef } from "react";
 import {
   GoogleMap,
-  LoadScript,
   Marker,
   Autocomplete,
   DirectionsRenderer,
+  useJsApiLoader,
 } from "@react-google-maps/api";
 
 const libraries = ["places"];
@@ -28,13 +28,27 @@ function GoogleMapComponent({ bookingData, setBookingData, fare, setFare }) {
   const [distance, setDistance] = useState("");
   const [duration, setDuration] = useState("");
 
+  const { isLoaded } = useJsApiLoader({
+    googleMapsApiKey: import.meta.env.VITE_GOOGLE_MAPS_API_KEY,
+    libraries,
+  });
+
   const calculateRoute = async () => {
     if (!pickupRef.current || !destinationRef.current) return;
 
-    const origin = pickupRef.current.getPlace().formatted_address;
-    const destination = destinationRef.current.getPlace().formatted_address;
+    const pickupPlace = pickupRef.current.getPlace();
+    const destinationPlace = destinationRef.current.getPlace();
 
-    
+    if (
+      !pickupPlace?.formatted_address ||
+      !destinationPlace?.formatted_address
+    ) {
+      return;
+    }
+
+    const origin = pickupPlace.formatted_address;
+    const destination = destinationPlace.formatted_address;
+
     const directionsService = new window.google.maps.DirectionsService();
 
     const results = await directionsService.route({
@@ -46,6 +60,7 @@ function GoogleMapComponent({ bookingData, setBookingData, fare, setFare }) {
     setDirections(results);
 
     const leg = results.routes[0].legs[0];
+
     setBookingData({
       ...bookingData,
       pickup: origin,
@@ -64,11 +79,12 @@ function GoogleMapComponent({ bookingData, setBookingData, fare, setFare }) {
     setFare(calculatedFare);
   };
 
+  if (!isLoaded) {
+    return <h3>Loading Map...</h3>;
+  }
+
   return (
-    <LoadScript
-      googleMapsApiKey={import.meta.env.VITE_GOOGLE_MAPS_API_KEY}
-      libraries={libraries}
-    >
+    <>
       <div
         style={{
           display: "flex",
@@ -127,7 +143,7 @@ function GoogleMapComponent({ bookingData, setBookingData, fare, setFare }) {
 
         <p>Estimated Fare : ₹{fare}</p>
       </div>
-    </LoadScript>
+    </>
   );
 }
 

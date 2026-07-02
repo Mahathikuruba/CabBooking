@@ -148,3 +148,42 @@
     grid-template-columns: 1fr;
   }
 }
+@media (max-width: 768px) {
+  .home {
+    padding: 30px 20px;
+
+    height: auto;
+
+    min-height: 90vh;
+  }
+
+  .hero {
+    max-width: 100%;
+  }
+
+  .hero h1 {
+    font-size: 36px;
+
+    line-height: 1.3;
+  }
+
+  .hero p {
+    font-size: 18px;
+  }
+
+  .hero-buttons {
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+    gap: 15px;
+  }
+
+  .hero-buttons button {
+    width: 220px;
+
+    margin: 0;
+  }
+}
