@@ -75,3 +75,50 @@
     padding: 25px;
   }
 }
+.mission-vision {
+  display: grid;
+
+  grid-template-columns: repeat(2, 1fr);
+
+  gap: 25px;
+
+  margin-bottom: 40px;
+}
+
+.mission-card,
+.vision-card {
+  background: linear-gradient(135deg, #eff6ff, #dbeafe);
+
+  padding: 25px;
+
+  border-radius: 18px;
+
+  box-shadow: 0 10px 25px rgba(37, 99, 235, 0.1);
+
+  transition: 0.3s;
+}
+
+.mission-card:hover,
+.vision-card:hover {
+  transform: translateY(-5px);
+}
+
+.mission-card h2,
+.vision-card h2 {
+  color: #2563eb;
+
+  margin-bottom: 15px;
+}
+
+.mission-card p,
+.vision-card p {
+  color: #555;
+
+  line-height: 1.8;
+}
+
+@media (max-width: 768px) {
+  .mission-vision {
+    grid-template-columns: 1fr;
+  }
+}

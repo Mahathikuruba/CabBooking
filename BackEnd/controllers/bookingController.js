@@ -13,7 +13,31 @@ const createBooking = async (req, res) => {
       fare,
       distance,
       duration,
+      userId,
     } = req.body;
+
+    const drivers = [
+      {
+        driverName: "Ravi Kumar",
+        driverPhone: "9876543210",
+        vehicleNumber: "AP39 AB 1234",
+        driverRating: 4.8,
+      },
+      {
+        driverName: "Suresh Reddy",
+        driverPhone: "9123456780",
+        vehicleNumber: "AP39 CD 5678",
+        driverRating: 4.7,
+      },
+      {
+        driverName: "Rahul Sharma",
+        driverPhone: "9988776655",
+        vehicleNumber: "AP39 EF 9012",
+        driverRating: 4.9,
+      },
+    ];
+
+    const randomDriver = drivers[Math.floor(Math.random() * drivers.length)];
 
     const booking = await Booking.create({
       pickup,
@@ -25,8 +49,9 @@ const createBooking = async (req, res) => {
       fare,
       distance,
       duration,
+      userId,
+      ...randomDriver,
     });
-
     res.status(201).json({
       success: true,
       message: "Ride Booked Successfully",
@@ -43,15 +68,13 @@ const createBooking = async (req, res) => {
 // Get All Bookings
 const getBookings = async (req, res) => {
   try {
-    const bookings = await Booking.find().sort({ createdAt: -1 });
+    const { userId } = req.params;
 
-    res.status(200).json({
-      success: true,
-      bookings,
-    });
+    const bookings = await Booking.find({ userId });
+
+    res.status(200).json(bookings);
   } catch (error) {
     res.status(500).json({
-      success: false,
       message: error.message,
     });
   }

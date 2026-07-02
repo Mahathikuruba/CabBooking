@@ -13,6 +13,27 @@ function About() {
           offering quick booking, transparent pricing, and reliable
           transportation.
         </p>
+        <div className="mission-vision">
+          <div className="mission-card">
+            <h2>🎯 Our Mission</h2>
+
+            <p>
+              To provide safe, affordable, and reliable transportation for
+              students, faculty, and staff through an intelligent campus
+              ride-booking platform.
+            </p>
+          </div>
+
+          <div className="vision-card">
+            <h2>🚀 Our Vision</h2>
+
+            <p>
+              To become the most trusted smart transportation solution for
+              educational institutions by integrating modern technologies and
+              user-friendly services.
+            </p>
+          </div>
+        </div>
 
         <div className="about-features">
           <div className="feature-card">

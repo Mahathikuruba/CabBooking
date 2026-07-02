@@ -12,7 +12,7 @@ const router = express.Router();
 router.post("/", createBooking);
 
 // Get All Bookings
-router.get("/", getBookings);
+router.get("/:userId", getBookings);
 
 router.put("/:id", updateBooking);
 

@@ -45,10 +45,34 @@ const bookingSchema = new mongoose.Schema(
       type: String,
       default: "",
     },
+    userId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
 
     status: {
       type: String,
       default: "Booked",
+    },
+    driverName: {
+      type: String,
+      default: "",
+    },
+
+    driverPhone: {
+      type: String,
+      default: "",
+    },
+
+    vehicleNumber: {
+      type: String,
+      default: "",
+    },
+
+    driverRating: {
+      type: Number,
+      default: 0,
     },
   },
   {

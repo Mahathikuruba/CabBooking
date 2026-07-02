@@ -28,6 +28,7 @@ function Booking() {
     journeyDate: "",
     journeyTime: "",
   });
+  const [driverDetails, setDriverDetails] = useState(null);
 
   // Handle Input Changes
   const handleChange = (e) => {
@@ -74,6 +75,8 @@ function Booking() {
     }
 
     try {
+      const user = JSON.parse(localStorage.getItem("user"));
+
       const booking = {
         pickup: bookingData.pickup,
         destination: bookingData.destination,
@@ -82,15 +85,23 @@ function Booking() {
         passengers,
         vehicle: selectedVehicle,
         fare,
-        distance: bookingData.distance || "",
-        duration: bookingData.duration || "",
+        distance: bookingData.distance,
+        duration: bookingData.duration,
+        userId: user._id,
       };
       const res = await axios.post(
         "http://localhost:5000/api/bookings",
         booking,
       );
 
-      alert(res.data.message);
+      setDriverDetails({
+        driverName: res.data.booking.driverName,
+        driverPhone: res.data.booking.driverPhone,
+        vehicleNumber: res.data.booking.vehicleNumber,
+        driverRating: res.data.booking.driverRating,
+      });
+
+      alert("Ride Booked Successfully!");
 
       setBookingData({
         pickup: "",
@@ -176,6 +187,12 @@ function Booking() {
           >
             🚖 Recommended Vehicle: {recommended}
           </p>
+          <GoogleMapComponent
+            bookingData={bookingData}
+            setBookingData={setBookingData}
+            fare={fare}
+            setFare={setFare}
+          />
 
           {/* Vehicle Selection */}
 
@@ -235,57 +252,57 @@ function Booking() {
             />
           </div>
 
-          <p
-            style={{
-              textAlign: "center",
-              marginTop: "20px",
-              fontWeight: "bold",
-              color: "#2563eb",
-            }}
-          >
-            Selected Ride : {selectedVehicle || "None"}
-          </p>
+          <div className="ride-summary">
+            <h2>🚖 Ride Summary</h2>
 
-          <p
-            style={{
-              textAlign: "center",
-              fontWeight: "bold",
-              color: "green",
-            }}
-          >
-            Estimated Fare : ₹{fare}
-          </p>
+            <div className="summary-row">
+              <span>Vehicle</span>
+              <strong>{selectedVehicle || "--"}</strong>
+            </div>
 
-          <p
-            style={{
-              textAlign: "center",
-              color: "green",
-              fontWeight: "bold",
-            }}
-          >
-            🟢 Available
-          </p>
+            <div className="summary-row">
+              <span>Fare</span>
+              <strong>₹{fare}</strong>
+            </div>
 
-          <p
-            style={{
-              textAlign: "center",
-              color: "#2563eb",
-              fontWeight: "bold",
-            }}
-          >
-            ⏱ Arrival Time : {arrivalTime || "--"}
-          </p>
+            <div className="summary-row">
+              <span>Distance</span>
+              <strong>{bookingData.distance || "--"}</strong>
+            </div>
 
-          <GoogleMapComponent
-            bookingData={bookingData}
-            setBookingData={setBookingData}
-            fare={fare}
-            setFare={setFare}
-          />
+            <div className="summary-row">
+              <span>ETA</span>
+              <strong>{bookingData.duration || arrivalTime || "--"}</strong>
+            </div>
+
+            <div className="summary-row">
+              <span>Status</span>
+              <strong style={{ color: "#16a34a" }}>🟢 Available</strong>
+            </div>
+          </div>
+          {driverDetails && (
+            <div className="driver-card">
+              <h3>✅ Driver Assigned</h3>
+
+              <p>
+                <strong>Driver:</strong> {driverDetails.driverName}
+              </p>
+
+              <p>
+                <strong>Phone:</strong> {driverDetails.driverPhone}
+              </p>
+
+              <p>
+                <strong>Vehicle No:</strong> {driverDetails.vehicleNumber}
+              </p>
+
+              <p>
+                <strong>Rating:</strong> ⭐ {driverDetails.driverRating}
+              </p>
+            </div>
+          )}
 
           <br />
-
-          
 
           <button type="button" onClick={handleBooking}>
             Book Ride

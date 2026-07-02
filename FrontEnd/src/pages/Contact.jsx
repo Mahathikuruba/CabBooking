@@ -1,6 +1,40 @@
 import "../styles/Contact.css";
+import { useState } from "react";
+import axios from "axios";
+import "../styles/Contact.css";
 
 function Contact() {
+  const [contactData, setContactData] = useState({
+    name: "",
+    email: "",
+    message: "",
+  });
+
+  const handleChange = (e) => {
+    setContactData({
+      ...contactData,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      await axios.post("http://localhost:5000/api/contact", contactData);
+
+      alert("Message sent successfully!");
+
+      setContactData({
+        name: "",
+        email: "",
+        message: "",
+      });
+    } catch (error) {
+      console.log(error);
+      alert("Something went wrong!");
+    }
+  };
   return (
     <div className="contact-container">
       <div className="contact-card">
@@ -28,12 +62,30 @@ function Contact() {
             <p>8:00 AM - 8:00 PM</p>
           </div>
 
-          <form className="contact-form">
-            <input type="text" placeholder="Your Name" />
+          <form className="contact-form" onSubmit={handleSubmit}>
+            <input
+              type="text"
+              name="name"
+              placeholder="Your Name"
+              value={contactData.name}
+              onChange={handleChange}
+            />
 
-            <input type="email" placeholder="Your Email" />
+            <input
+              type="email"
+              name="email"
+              placeholder="Your Email"
+              value={contactData.email}
+              onChange={handleChange}
+            />
 
-            <textarea rows="6" placeholder="Write your message..."></textarea>
+            <textarea
+              rows="6"
+              name="message"
+              placeholder="Write your message..."
+              value={contactData.message}
+              onChange={handleChange}
+            />
 
             <button type="submit">Send Message</button>
           </form>
