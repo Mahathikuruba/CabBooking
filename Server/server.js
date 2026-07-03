@@ -1,7 +1,9 @@
 const express = require("express");
 const cors = require("cors");
 const dotenv = require("dotenv");
+
 const connectDB = require("./config/db");
+
 const authRoutes = require("./routes/authRoutes");
 const bookingRoutes = require("./routes/bookingRoutes");
 const contactRoutes = require("./routes/contactRoutes");
@@ -20,7 +22,7 @@ app.use("/api/bookings", bookingRoutes);
 app.use("/api/contact", contactRoutes);
 
 app.get("/", (req, res) => {
-  res.send("Cab Booking API Running");
+  res.send("THIS IS MY SERVER");
 });
 
 app.listen(process.env.PORT, () => {
