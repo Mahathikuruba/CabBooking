@@ -51,15 +51,37 @@ function GoogleMapComponent({ bookingData, setBookingData, fare, setFare }) {
 
     const directionsService = new window.google.maps.DirectionsService();
 
-    const results = await directionsService.route({
-      origin,
-      destination,
-      travelMode: window.google.maps.TravelMode.DRIVING,
-    });
+    try {
+      const results = await directionsService.route({
+        origin,
+        destination,
+        travelMode: window.google.maps.TravelMode.DRIVING,
+      });
 
-    setDirections(results);
+      setDirections(results);
 
-    const leg = results.routes[0].legs[0];
+      const leg = results.routes[0].legs[0];
+
+      setBookingData({
+        ...bookingData,
+        pickup: origin,
+        destination,
+        distance: leg.distance.text,
+        duration: leg.duration.text,
+      });
+
+      setDistance(leg.distance.text);
+      setDuration(leg.duration.text);
+
+      const km = parseFloat(leg.distance.text.replace(" km", ""));
+
+      const calculatedFare = Math.round(50 + km * 12);
+
+      setFare(calculatedFare);
+    } catch (err) {
+      console.error(err);
+      alert("Unable to calculate route.");
+    }
 
     setBookingData({
       ...bookingData,

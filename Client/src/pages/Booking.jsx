@@ -207,7 +207,7 @@ function Booking() {
               selected={selectedVehicle === "Bike"}
               onSelect={() => {
                 setSelectedVehicle("Bike");
-                setFare(70);
+                
                 setArrivalTime("2 mins");
               }}
             />
@@ -220,7 +220,7 @@ function Booking() {
               selected={selectedVehicle === "Mini"}
               onSelect={() => {
                 setSelectedVehicle("Mini");
-                setFare(150);
+               
                 setArrivalTime("4 mins");
               }}
             />
@@ -233,7 +233,7 @@ function Booking() {
               selected={selectedVehicle === "Sedan"}
               onSelect={() => {
                 setSelectedVehicle("Sedan");
-                setFare(250);
+                
                 setArrivalTime("6 mins");
               }}
             />
@@ -246,7 +246,7 @@ function Booking() {
               selected={selectedVehicle === "SUV"}
               onSelect={() => {
                 setSelectedVehicle("SUV");
-                setFare(400);
+                
                 setArrivalTime("8 mins");
               }}
             />
